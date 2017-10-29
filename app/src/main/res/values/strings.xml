@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">مدیریت مدرسه (معاون)</string>
+    <string-array name="haftea">
+        <item>هفته اول</item>
+        <item>هفته دوم</item>
+        <item>هفته سوم</item>
+        <item>هفته چهارم</item>
+    </string-array>
+    <string name="Week_prompt">هفته خود را انتخاب کنید</string>
+
+</resources>

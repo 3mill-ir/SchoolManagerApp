@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
@@ -16,7 +18,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -58,6 +59,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    public static int[] icons = {R.drawable.ic_edit_black_24dp, R.drawable.ic_info_black_24dp, R.drawable.ic_exit_to_app_black_24dp};
+    public static String[] items = {"ویرایش رمز عبور", "درباره ما", "خروج از حساب کاربری"};
+    LinearLayout studentslay, classnamelay;
+    DrawerLayout drawer;
+    ListView ListDrawer;
+    ProgressDialog loading;
+    int ratenum = 5;
     private List<ClassListModel> classlist = new ArrayList<>();
     private List<ClassListSubModel> classlistsub = new ArrayList<>();
     private ClassListAdapter mAdapterclass;
@@ -67,19 +75,6 @@ public class MainActivity extends AppCompatActivity {
     private ClassStudentListAdapter mAdapterstudent;
     private EditText search;
 
-    public enum DilogType {
-        LOADING,
-        ERROR
-    }
-
-
-    LinearLayout studentslay,classnamelay;
-    DrawerLayout drawer;
-    ListView ListDrawer;
-    public static int [] icons={R.drawable.ic_edit_black_24dp,R.drawable.ic_info_black_24dp,R.drawable.ic_exit_to_app_black_24dp};
-    public static String [] items={"ویرایش رمز عبور","درباره ما","خروج از حساب کاربری"};
-    ProgressDialog loading;
-    int ratenum=5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                      //   TabType=1;
                         ShowStudent();
                         break;
-                    
+
                 }
 
                 return true;
@@ -278,6 +273,16 @@ public class MainActivity extends AppCompatActivity {
             movieList.add(movie);
             mAdapter.notifyDataSetChanged();
         }*/
+        final SharedPreferences pref = getSharedPreferences("ShowDialog", 0);
+        Log.i("showDialog", String.valueOf(pref.getBoolean("ShowDialog", false)));
+        if (pref.getBoolean("ShowDialog", false)) {
+            try {
+                new AppUpdate(this).check_Version();
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
 
 
 
@@ -287,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
         studentslay.setVisibility(View.VISIBLE);
         classnamelay.setVisibility(View.GONE);
     }
+
     private void ParseNames(List<String> names) {
 
         for(char alphabet = 'ا'; alphabet <= 'ی';alphabet++) {
@@ -315,6 +321,7 @@ public class MainActivity extends AppCompatActivity {
 
             }}
     }
+
     private List<String> getContactsWithLetter(char letter, List<String> names) {
         List<String> contacts = new ArrayList<>();
 
@@ -340,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapterstudent.updateList(temp);
 
     }
+
     private void init() {
         search=(EditText)findViewById(R.id.stdudentsearchboxa);
         studentslay=(LinearLayout)findViewById(R.id.studentslay);
@@ -736,6 +744,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("BNVHelper", "Unable to change value of shift mode", e);
         }
     }
+
     @Override
     public void onBackPressed() {
         if(drawer.isDrawerOpen(GravityCompat.END)){
@@ -746,6 +755,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
     private void MakeDialog(DilogType type, String Text) {
         if (type == DilogType.LOADING) {
             loading = new ProgressDialog(MainActivity.this);
@@ -770,6 +780,7 @@ public class MainActivity extends AppCompatActivity {
             alt.show();
         }
     }
+
     private void ShowChange() {
         final Dialog dl = new Dialog(MainActivity.this);
         dl.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -857,10 +868,16 @@ public class MainActivity extends AppCompatActivity {
         dl.show();
 
     }
+
     @Override
     public void onRestart() {
         super.onRestart();
         LoadMagateh();
 
 
+    }
+
+    public enum DilogType {
+        LOADING,
+        ERROR
     }}
